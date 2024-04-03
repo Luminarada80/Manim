@@ -1,0 +1,40 @@
+Open cmd
+cd C:\Users\moe81\manim
+manimgl start.py SquareToCircle
+
+class ErrorCalculationTable(Scene):
+    def construct(self):
+        AND_truth_table = Table(
+            [["0", "0", "0"],
+             ["0", "1", "0"],
+             ["1", "0", "0"],
+             ["1", "1", "1"]],
+
+             include_outer_lines=True
+        )
+        truth_table_title = Text("AND Truth Table")
+        always(truth_table_title.next_to, AND_truth_table.get_center(), UP)  
+
+        data_table = Table(
+            [["0", "1", "1", "1", "0", "1", "1"],
+             ["1", "0", "1", "0", "1", "1", "1"],
+             ["0", "1", "1", "0", "0", "1", "1"],
+             ["0", "0", "1", "0", "0", "1", "1"]],
+             row_labels = [
+                 Text("Gene 1"),
+                 Text("Gene 2"),
+                 Text("Gene 3"),
+                 Text("Predicted")
+             ],
+             include_outer_lines=True
+        )
+
+        data_table_title = Text("Calculating Error")
+        always(data_table_title.next_to, data_table.get_center(), UP)
+
+        table_group = Group(AND_truth_table, data_table).scale(0.5).arrange(buff = 0.5)
+
+        self.play(Create(AND_truth_table),
+                  Create(data_table))
+
+        self.wait(2)

@@ -4,18 +4,18 @@ directories:
   # sourcecode generating that video
   mirror_module_path: False
   # Where should manim output video and image files?
-  output: ""
+  output: "C:/Users/moe81/Documents/manim/output"
   # If you want to use images, manim will look to these folders to find them
-  raster_images: ""
-  vector_images: ""
+  raster_images: "C:/Users/moe81/Documents/manim/raster_images"
+  vector_images: "C:/Users/moe81/Documents/manim/vector_images"
   # If you want to use sounds, manim will look here to find it.
-  sounds: ""
+  sounds: "C:/Users/moe81/Documents/manim/sounds"
   # Manim often generates tex_files or other kinds of serialized data
   # to keep from having to generate the same thing too many times.  By
   # default, these will be stored at tempfile.gettempdir(), e.g. this might
   # return whatever is at to the TMPDIR environment variable.  If you want to
   # specify them elsewhere,
-  temporary_storage: ""
+  temporary_storage: "C:/Users/moe81/Documents/manim/temporary_storage"
 universal_import_line: "from manimlib import *"
 style:
   tex_template: "default"
@@ -25,7 +25,7 @@ style:
 # Set the position of preview window, you can use directions, e.g. UL/DR/OL/OO/...
 # also, you can also specify the position(pixel) of the upper left corner of 
 # the window on the monitor, e.g. "960,540"
-window_position: UR
+window_position: OO
 window_monitor: 0
 full_screen: False
 # If break_into_partial_movies is set to True, then many small
