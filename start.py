@@ -4,6 +4,9 @@ class NodesAndEdges(Scene):
     def construct(self):
 
         self.camera.background_color=BLACK
+        self.outline_color=WHITE
+        self.text_color=WHITE
+
         # self.nodes_and_edges_scene()
         vertices = [0, 1, 2]
         edges = [(0, 1), (0, 2)]
@@ -28,7 +31,7 @@ class NodesAndEdges(Scene):
         self.play(DrawBorderThenFill(graph[1]),
                   DrawBorderThenFill(graph[2]))
                 
-        edge_label = Text('Edge').scale(0.5).rotate(0).move_to([-2.5, 0.75, 0])
+        edge_label = Text('Edge', color=self.text_color).scale(0.5).rotate(0).move_to([-2.5, 0.75, 0])
         
         arrow1 = Arrow(graph[0].align_to(RIGHT), graph[1].align_to(LEFT), buff=0)
         arrow2 = Arrow(graph[0].align_to(RIGHT), graph[2].align_to(LEFT), buff=0)
@@ -72,7 +75,7 @@ class NodesAndEdges(Scene):
         self.remove(graph)
         self.play(updated_graph.animate.scale(0.5))
 
-        activation_label = Text("Nodes can be \n activated").scale(0.5)
+        activation_label = Text("Nodes can be \n activated", color=self.text_color).scale(0.5)
         always(activation_label.next_to, updated_graph[0].get_left(), LEFT*2)
 
         self.play(Write(activation_label, run_time=0.5),
@@ -84,7 +87,7 @@ class NodesAndEdges(Scene):
             updated_graph[1].animate.scale(0.75).set_fill(BLUE_E),
             updated_graph[2].animate.scale(0.75).set_fill(BLUE_E))
 
-        inactivation_label = Text("Nodes can be \n inactivated").scale(0.5)
+        inactivation_label = Text("Nodes can be \n inactivated", color=self.text_color).scale(0.5)
         always(inactivation_label.next_to, updated_graph[0].get_left(), LEFT*2)
         self.play(Write(inactivation_label, run_time=0.5),
             updated_graph[0].animate.scale(1.25).set_fill(RED),
@@ -119,7 +122,7 @@ class NodesAndEdges(Scene):
             updated_graph[3].animate.scale(1.25),
             *animations
             )
-        text = Text("When there are two nodes signaling to another, \n we dont know the logic connecting them \n (AND, OR, NOT)").scale(0.4)
+        text = Text("When there are two nodes signaling to another, \n we dont know the logic connecting them \n (AND, OR, NOT)", color=self.text_color).scale(0.4)
         always(text.next_to, attention_border.get_right(), RIGHT*1.5)
 
         self.play(Write(text))
@@ -130,7 +133,7 @@ class NodesAndEdges(Scene):
         self.play(updated_graph.animate.shift(LEFT*2).scale(0.75),
                   attention_border.animate.shift(LEFT*2.5).scale(0.75))
 
-        table_title = Text("Expression").scale(0.75)
+        table_title = Text("Expression", color=self.text_color).scale(0.75)
         table = Table([["1", "1", "0", "0", "1", "0", "1"],
                        ["0", "1", "1", "0", "1", "1", "1"],
                        ["0", "1", "0", "0", "1", "0", "1"]],
@@ -141,18 +144,18 @@ class NodesAndEdges(Scene):
         always(table_title.next_to, table.get_center(), UP*4)
         always(table.next_to, attention_border.get_right(), RIGHT*4)
 
-        gene1_label = Text('1').scale(0.75)
-        gene2_label = Text('2').scale(0.75)
-        gene3_label = Text('3').scale(0.75)
+        gene1_label = Text('1', color=self.text_color).scale(0.75)
+        gene2_label = Text('2', color=self.text_color).scale(0.75)
+        gene3_label = Text('3', color=self.text_color).scale(0.75)
         always(gene1_label.move_to, updated_graph[1].get_center())
         always(gene2_label.move_to, updated_graph[2].get_center())
         always(gene3_label.move_to, updated_graph[3].get_center())
 
-        logic_text = Text("We can determine the rule between Genes 1 and 2\n by looking at the expression table and seeing \n when Gene 3 activates")
+        logic_text = Text("We can determine the rule between Genes 1 and 2\n by looking at the expression table and seeing \n when Gene 3 activates", color=self.text_color)
         logic_text.shift(DOWN*2, RIGHT*2.5)
         logic_text.scale(0.5)
 
-        logic_text2 = Text("In this case, the rule should be AND, because \n Gene 1 AND Gene 2 have to signal \n to activate Gene 3")
+        logic_text2 = Text("In this case, the rule should be AND, because \n Gene 1 AND Gene 2 have to signal \n to activate Gene 3", color=self.text_color)
         logic_text2.shift(DOWN*2, RIGHT*2.5)
         logic_text2.scale(0.5)
 
@@ -207,9 +210,14 @@ class NodesAndEdges(Scene):
         
         #Column 7
         self.play(column_outline.animate.shift(RIGHT*0.79),
-            updated_graph[2].animate.scale(0.75).set_fill(BLUE_E))
+            updated_graph[1].animate.scale(1.25).set_fill(GREEN),
+            updated_graph[3].animate.scale(1.25).set_fill(GREEN))
 
-        self.wait(2)
+        self.play(updated_graph[1].animate.scale(0.75).set_fill(BLUE_E),
+                  updated_graph[2].animate.scale(0.75).set_fill(BLUE_E),
+                  updated_graph[3].animate.scale(0.75).set_fill(BLUE_E),
+                  Unwrite(column_outline)
+        )
         self.play(FadeOut(logic_text2, shift=DOWN*0.5))
 
         self.wait(5)
@@ -221,18 +229,22 @@ class NodesAndEdges(Scene):
             "radius": 0.5,
             "stroke_color": WHITE,
             "stroke_width": 4,
+
         }
 
         edge_config = {
             "stroke_width": 5.25,
             "tip_config": {
                 "tip_length": 0.35,
-                "tip_width": 0.35
+                "tip_width": 0.35,
             },
         }
 
         # Create a DiGraph with specified positions
         graph = DiGraph(vertices, edges, layout=positions, edge_config=edge_config, vertex_config=vertex_config)
+
+        # for edge in graph.edges:
+        #     graph[edge].set_stroke(BLACK)
 
         return graph
 
