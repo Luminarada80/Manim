@@ -248,8 +248,31 @@ class NodesAndEdges(Scene):
 
         return graph
 
-class ErrorCalculationTable(Scene):
+class GeneticAlgorithm(Scene):
     def construct(self):
-        pass
+        three_node_rules = ["A_AND_B_AND_C",
+          "A_AND_B_OR_C",
+          "A_OR_B_AND_C", 
+          "A_AND_B", 
+          "A_OR_B", 
+          "A_AND_C", 
+          "A_OR_C", 
+          "B_AND_C", 
+          "B_OR_C", 
+          "A", 
+          "B", 
+          "C"]
+        two_node_rules = ["A_AND_B", "A_OR_B", "A", "B"]
+
+        one_node_rules = ["A", "B"]
+
+        rule_table = Table(
+            [three_node_rules,
+             two_node_rules,
+             one_node_rules])
+
+        self.add(rule_table)
+
+        self.wait(5)
 
 
