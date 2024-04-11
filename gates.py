@@ -2,6 +2,7 @@ from manim import *
 
 class ORGate(VGroup): 
     def __init__(self, scene):
+        super().__init__()
         self.scene = scene
 
         # Create the shapes of the OR gate
@@ -10,22 +11,7 @@ class ORGate(VGroup):
         self.or_leftarc = ArcBetweenPoints(start = [-1,1,0], end = [-1,-1,0], angle = -PI/3)
         self.or_text = Text("OR").scale(0.75)
 
-        # Add shapes to the group
-        self.object = Group(self.or_uparc, self.or_lowarc, self.or_leftarc, self.or_text)
-    
-    def draw_gate(self):
-        self.scene.play(
-            Create(self.or_uparc),
-            Create(self.or_lowarc),
-            Create(self.or_leftarc),
-            run_time = 1
-        )
-
-        self.scene.play(Write(self.or_text))
-        self.scene.add(self.object)
-
-    def add_wires(self, draw=False):
-        # Create wires that always redraw based on the gate's position
+        # Wires
         self.wireA = Line(
             start = self.or_leftarc.get_left() + UP*0.5 + RIGHT*0.18,
             end = self.or_leftarc.get_left() + LEFT*0.75 + UP*0.5 + RIGHT*0.15
@@ -39,16 +25,34 @@ class ORGate(VGroup):
             end = self.or_uparc.get_end() + RIGHT*0.75
         )
 
-        if draw:
-            self.scene.play(Write(self.wireA), Write(self.wireB), Write(self.wireO))
-        else:
-            self.scene.add(self.wireA, self.wireB, self.wireO)
-
-        # Add wires to the group
+        # Add shapes to the group
         self.object = Group(self.or_uparc, self.or_lowarc, self.or_leftarc, self.or_text, self.wireA, self.wireB, self.wireO)
+    
+    def draw_gate(self):
+        return [
+            Create(self.or_uparc),
+            Create(self.or_lowarc),
+            Create(self.or_leftarc),
+            Write(self.or_text)
+            ]
+    
+    def undraw_gate(self):
+        return [Uncreate(self.or_uparc), Uncreate(self.or_lowarc), Uncreate(self.or_leftarc), Unwrite(self.or_text)]
+    
+    def add_wires(self, draw=False):
+        if draw:
+            return [Write(self.wireA), Write(self.wireB), Write(self.wireO)]
+        else:
+            return [self.wireA, self.wireB, self.wireO]
+
+
+    def remove_wires(self):
+        return [Unwrite(self.wireA), Unwrite(self.wireB), Unwrite(self.wireO)]
+
 
 class ANDGate(VGroup):
     def __init__(self, scene):
+        super().__init__()
         self.scene = scene  
 
         # Create AND gate
@@ -58,22 +62,7 @@ class ANDGate(VGroup):
         self.and_arc    = Arc(radius = 1.0, start_angle = -PI/2 , angle = PI)
         self.and_text   = Text("AND").scale(0.75)
 
-        self.object = Group(self.and_uphor, self.and_lowhor, self.and_ver, self.and_arc, self.and_text)
-    
-    def draw_gate(self):
-        self.scene.play(
-            Create(self.and_uphor),
-            Create(self.and_lowhor),
-            Create(self.and_ver),
-            Create(self.and_arc),
-            run_time = 1
-        )
-
-        self.scene.play(Write(self.and_text))
-        self.scene.add(self.object)
-
-    def add_wires(self, draw=False):
-        # Create wires that always redraw based on the gate's position
+        # Wires
         self.wireA = Line(
             start = self.and_uphor.get_left() + DOWN*0.5,
             end = self.and_uphor.get_left() + LEFT*0.75 + DOWN*0.5
@@ -87,23 +76,35 @@ class ANDGate(VGroup):
             end = self.and_arc.get_right() + RIGHT*0.75
         )
 
-        if draw:
-            self.scene.play(Write(self.wireA), Write(self.wireB), Write(self.wireO))
-        else:
-            self.scene.add(self.wireA, self.wireB, self.wireO)
-
-        # Add wires to the group
         self.object = Group(self.and_uphor, self.and_lowhor, self.and_ver, self.and_arc, self.and_text, self.wireA, self.wireB, self.wireO)
+    
+    def draw_gate(self):
+        return [
+            Create(self.and_uphor),
+            Create(self.and_lowhor),
+            Create(self.and_ver),
+            Create(self.and_arc),
+            Write(self.and_text)
+            ]
+    
+    def undraw_gate(self):
+        return [
+            Uncreate(self.and_uphor),
+            Uncreate(self.and_lowhor),
+            Uncreate(self.and_ver),
+            Uncreate(self.and_arc),
+            Unwrite(self.and_text)
+        ]
 
-    def get_wire(self, wire:str):
-        if wire == "A":
-            return self.not_tri.get_left() + LEFT*1 + UP*0.5 + RIGHT*0.15
+    def add_wires(self, draw=False):
+        # Create wires that always redraw based on the gate's position
+        if draw:
+            return [Write(self.wireA), Write(self.wireB), Write(self.wireO)]
+        else:
+            return [self.wireA, self.wireB, self.wireO]
         
-        elif wire == "B":
-            return self.not_tri.get_left() + LEFT*1 + DOWN*0.5 + RIGHT*0.15
-        
-        elif wire == "O":
-            return self.not_tri.get_end() + RIGHT*1
+    def remove_wires(self):
+        return [Unwrite(self.wireA), Unwrite(self.wireB), Unwrite(self.wireO)]
 
 class NOTGate(VGroup):
     def __init__(self, scene):
@@ -114,20 +115,6 @@ class NOTGate(VGroup):
         self.not_cir = Circle(radius = 0.2, color = WHITE).move_to([1.2,0,0])
         self.not_text = Text("NOT").scale(0.75)
 
-        self.object = Group(self.not_tri, self.not_cir, self.not_text)
-    
-    def draw_gate(self):
-        self.scene.play(
-            Create(self.not_tri),
-            Create(self.not_cir),
-            run_time = 1
-        )
-
-        self.scene.play(Write(self.not_text))
-        self.scene.add(self.object)
-
-    def add_wires(self, draw=False):
-        # Create wires that always redraw based on the gate's position
         self.wireA = Line(
             start = self.not_tri.get_left() + UP*0.5,
             end = self.not_tri.get_left() + LEFT*0.75 + UP*0.5
@@ -141,24 +128,31 @@ class NOTGate(VGroup):
             end = self.not_cir.get_right() + RIGHT*0.75
         )
 
-        # Add in a way to get the wires positions
-        if draw:
-            self.scene.play(Write(self.wireA), Write(self.wireB), Write(self.wireO))
-        else:
-            self.scene.add(self.wireA, self.wireB, self.wireO)
-
-        # Add wires to the group
         self.object = Group(self.not_tri, self.not_cir, self.not_text, self.wireA, self.wireB, self.wireO)
+    
+    def draw_gate(self):
+        return [
+            Create(self.not_tri),
+            Create(self.not_cir),
+            Write(self.not_text)
+        ]
 
-    def get_wire(self, wire:str):
-        if wire == "A":
-            return self.not_tri.get_left() + LEFT*1 + UP*0.5 + RIGHT*0.15
+    
+    def undraw_gate(self):
+        return [
+            Uncreate(self.not_tri),
+            Uncreate(self.not_cir),
+            Unwrite(self.not_text)
+        ]
+
+    def add_wires(self, draw=False):
+        if draw:
+            return [Write(self.wireA), Write(self.wireB), Write(self.wireO)]
+        else:
+            return [self.wireA, self.wireB, self.wireO]
         
-        elif wire == "B":
-            return self.not_tri.get_left() + LEFT*1 + DOWN*0.5 + RIGHT*0.15
-        
-        elif wire == "O":
-            return self.not_tri.get_end() + RIGHT*1
+    def remove_wires(self):
+        return [Unwrite(self.wireA), Unwrite(self.wireB), Unwrite(self.wireO)]
 
 def connect(object1_wire, object2_wire):
     connecting_line = Line(start=[object1_wire.get_right()], end=[object2_wire.get_left()])

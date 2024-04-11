@@ -279,25 +279,72 @@ class GeneticAlgorithm(Scene):
 
 class BooleanNetwork(Scene):
     def construct(self):
+        # ----- Objects -----
+
+        # Gates
         or_gate = ORGate(self)
         and_gate = ANDGate(self)
         not_gate = NOTGate(self)
 
+        # Nodes
+        node1 = Circle(radius=1, color=BLUE_E, fill_opacity=1, stroke_color=WHITE, stroke_width=8).move_to(LEFT*3)
+        node2 = Circle(radius=1, color=BLUE_E, fill_opacity=1, stroke_color=WHITE, stroke_width=8).move_to(RIGHT*3)
+
+        # Labels
+        node1_text = always_redraw(lambda: Text("Node 1").scale(0.65).move_to(node1.get_center()))
+        node2_text = always_redraw(lambda: Text("Node 2").scale(0.65).move_to(node2.get_center()))
+
+        # Arrows
+        arrow = Arrow(start=node1.get_right(), end=node2.get_left(), buff=0)
+
+        # ----- Animations -----
+
         # Draws the OR gate and moves it to the top left
-        or_gate.draw_gate()
-        or_gate.add_wires(draw=True)
+        self.play(*or_gate.draw_gate())
+        self.add(or_gate.object)
+        self.play(*or_gate.add_wires(draw=True))
         self.wait()
-        self.play(or_gate.object.animate.move_to([-3,2,0]).scale(0.6))
+        self.play(or_gate.object.animate.move_to([0,2,0]).scale(0.6))
         self.wait()
 
         # Draws the AND gate and moves it to the top left
-        and_gate.draw_gate()
-        and_gate.add_wires(draw=True)
-        self.play(and_gate.object.animate.move_to([-6,2,0]).scale(0.6))
+        self.play(*and_gate.draw_gate())
+        self.add(and_gate.object)
+        self.play(*and_gate.add_wires(draw=True))
+        self.play(and_gate.object.animate.move_to([-3,2,0]).scale(0.6))
 
         # Draws the NOT gate and moves it to the top left
-        not_gate.draw_gate()
-        not_gate.add_wires(draw=True)
+        self.play(*not_gate.draw_gate())
+        self.add(not_gate.object)
+        self.play(*not_gate.add_wires(draw=True))
+        self.play(not_gate.object.animate.move_to([-6,2,0]).scale(0.6))
 
-        and_to_or = connect(and_gate.wireO, or_gate.wireB)
-        self.play(Create(and_to_or))
+        # Creates the nodes
+        self.play(
+            DrawBorderThenFill(node1),
+            DrawBorderThenFill(node2),
+            Write(node1_text),
+            Write(node2_text)
+            )
+        
+
+        
+        # Creates the arrow joining the nodes
+        self.play(Write(arrow))
+
+        self.wait(1)
+
+        # Removes the arrow joining the nodes
+        self.play(Unwrite(arrow))
+
+        # Removes the logic gates
+        self.play(*or_gate.remove_wires(), *and_gate.remove_wires(), *not_gate.remove_wires(),
+                  *or_gate.undraw_gate(), *and_gate.undraw_gate(), *not_gate.undraw_gate())
+
+        self.play(node1.animate.move_to(UP*2 + LEFT*3),
+                  node2.animate.move_to(DOWN*2 + LEFT*3))
+        
+        self.play(*and_gate.draw_gate())
+
+
+        self.wait(2)
