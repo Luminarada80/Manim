@@ -11,6 +11,10 @@ class ORGate(VGroup):
         self.or_leftarc = ArcBetweenPoints(start = [-1,1,0], end = [-1,-1,0], angle = -PI/3)
         self.or_text = Text("OR").scale(0.75)
 
+        self.A_pos = self.or_leftarc.get_left() + UP*0.5 + RIGHT*0.18
+        self.B_pos = self.or_leftarc.get_left() + DOWN*0.5 + RIGHT*0.18
+        self.O_pos = self.or_uparc.get_end()
+
         # Wires
         self.wireA = Line(
             start = self.or_leftarc.get_left() + UP*0.5 + RIGHT*0.18,
@@ -26,9 +30,10 @@ class ORGate(VGroup):
         )
 
         # Add shapes to the group
-        self.object = Group(self.or_uparc, self.or_lowarc, self.or_leftarc, self.or_text, self.wireA, self.wireB, self.wireO)
+        self.object = Group(self.or_uparc, self.or_lowarc, self.or_leftarc, self.or_text)
     
     def draw_gate(self):
+        self.object = Group(self.or_uparc, self.or_lowarc, self.or_leftarc, self.or_text, self.wireA, self.wireB, self.wireO)
         return [
             Create(self.or_uparc),
             Create(self.or_lowarc),
@@ -37,7 +42,13 @@ class ORGate(VGroup):
             ]
     
     def undraw_gate(self):
-        return [Uncreate(self.or_uparc), Uncreate(self.or_lowarc), Uncreate(self.or_leftarc), Unwrite(self.or_text)]
+        self.object = Group(self.or_uparc, self.or_lowarc, self.or_leftarc, self.or_text)
+        return [
+            FadeOut(self.or_uparc), 
+            FadeOut(self.or_lowarc), 
+            FadeOut(self.or_leftarc), 
+            FadeOut(self.or_text)
+            ]
     
     def add_wires(self, draw=False):
         if draw:
@@ -47,7 +58,7 @@ class ORGate(VGroup):
 
 
     def remove_wires(self):
-        return [Unwrite(self.wireA), Unwrite(self.wireB), Unwrite(self.wireO)]
+        return [FadeOut(self.wireA), FadeOut(self.wireB), FadeOut(self.wireO)]
 
 
 class ANDGate(VGroup):
@@ -61,6 +72,10 @@ class ANDGate(VGroup):
         self.and_ver    = Line(start = [-1,1,0], end = [-1,-1,0])
         self.and_arc    = Arc(radius = 1.0, start_angle = -PI/2 , angle = PI)
         self.and_text   = Text("AND").scale(0.75)
+
+        self.A_pos = self.and_uphor.get_left() + UP*0.5 + RIGHT*0.18
+        self.B_pos = self.and_uphor.get_left() + DOWN*0.5 + RIGHT*0.18
+        self.O_pos = self.and_arc.get_end()
 
         # Wires
         self.wireA = Line(
@@ -76,9 +91,10 @@ class ANDGate(VGroup):
             end = self.and_arc.get_right() + RIGHT*0.75
         )
 
-        self.object = Group(self.and_uphor, self.and_lowhor, self.and_ver, self.and_arc, self.and_text, self.wireA, self.wireB, self.wireO)
+        self.object = Group(self.and_uphor, self.and_lowhor, self.and_ver, self.and_arc, self.and_text)
     
     def draw_gate(self):
+        self.object = Group(self.and_uphor, self.and_lowhor, self.and_ver, self.and_arc, self.and_text, self.wireA, self.wireB, self.wireO)
         return [
             Create(self.and_uphor),
             Create(self.and_lowhor),
@@ -88,12 +104,13 @@ class ANDGate(VGroup):
             ]
     
     def undraw_gate(self):
+        self.object = Group(self.and_uphor, self.and_lowhor, self.and_ver, self.and_arc, self.and_text)
         return [
-            Uncreate(self.and_uphor),
-            Uncreate(self.and_lowhor),
-            Uncreate(self.and_ver),
-            Uncreate(self.and_arc),
-            Unwrite(self.and_text)
+            FadeOut(self.and_uphor),
+            FadeOut(self.and_lowhor),
+            FadeOut(self.and_ver),
+            FadeOut(self.and_arc),
+            FadeOut(self.and_text)
         ]
 
     def add_wires(self, draw=False):
@@ -104,7 +121,7 @@ class ANDGate(VGroup):
             return [self.wireA, self.wireB, self.wireO]
         
     def remove_wires(self):
-        return [Unwrite(self.wireA), Unwrite(self.wireB), Unwrite(self.wireO)]
+        return [FadeOut(self.wireA), FadeOut(self.wireB), FadeOut(self.wireO)]
 
 class NOTGate(VGroup):
     def __init__(self, scene):
@@ -128,9 +145,10 @@ class NOTGate(VGroup):
             end = self.not_cir.get_right() + RIGHT*0.75
         )
 
-        self.object = Group(self.not_tri, self.not_cir, self.not_text, self.wireA, self.wireB, self.wireO)
+        self.object = Group(self.not_tri, self.not_cir, self.not_text)
     
     def draw_gate(self):
+        self.object = Group(self.not_tri, self.not_cir, self.not_text, self.wireA, self.wireB, self.wireO)
         return [
             Create(self.not_tri),
             Create(self.not_cir),
@@ -139,10 +157,11 @@ class NOTGate(VGroup):
 
     
     def undraw_gate(self):
+        self.object = Group(self.not_tri, self.not_cir, self.not_text)
         return [
-            Uncreate(self.not_tri),
-            Uncreate(self.not_cir),
-            Unwrite(self.not_text)
+            FadeOut(self.not_tri),
+            FadeOut(self.not_cir),
+            FadeOut(self.not_text)
         ]
 
     def add_wires(self, draw=False):
@@ -152,7 +171,7 @@ class NOTGate(VGroup):
             return [self.wireA, self.wireB, self.wireO]
         
     def remove_wires(self):
-        return [Unwrite(self.wireA), Unwrite(self.wireB), Unwrite(self.wireO)]
+        return [FadeOut(self.wireA), FadeOut(self.wireB), FadeOut(self.wireO)]
 
 def connect(object1_wire, object2_wire):
     connecting_line = Line(start=[object1_wire.get_right()], end=[object2_wire.get_left()])

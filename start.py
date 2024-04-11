@@ -289,10 +289,12 @@ class BooleanNetwork(Scene):
         # Nodes
         node1 = Circle(radius=1, color=BLUE_E, fill_opacity=1, stroke_color=WHITE, stroke_width=8).move_to(LEFT*3)
         node2 = Circle(radius=1, color=BLUE_E, fill_opacity=1, stroke_color=WHITE, stroke_width=8).move_to(RIGHT*3)
+        node3 = Circle(radius=1, color=BLUE_E, fill_opacity=1, stroke_color=WHITE, stroke_width=8).move_to(LEFT*3)
 
         # Labels
         node1_text = always_redraw(lambda: Text("Node 1").scale(0.65).move_to(node1.get_center()))
         node2_text = always_redraw(lambda: Text("Node 2").scale(0.65).move_to(node2.get_center()))
+        node3_text = always_redraw(lambda: Text("Node 3").scale(0.65).move_to(node3.get_center()))
 
         # Arrows
         arrow = Arrow(start=node1.get_right(), end=node2.get_left(), buff=0)
@@ -344,7 +346,20 @@ class BooleanNetwork(Scene):
         self.play(node1.animate.move_to(UP*2 + LEFT*3),
                   node2.animate.move_to(DOWN*2 + LEFT*3))
         
-        self.play(*and_gate.draw_gate())
+        and_gate.object.scale(1.5).move_to([0,0,0])
+
+        node3.move_to([4,0,0])
+        node3_text.move_to(node3.get_center())
+
+        self.play(*and_gate.draw_gate(), DrawBorderThenFill(node3), Write(node3_text))
+
+        and_arrowA = Arrow(start=node1.get_right(), end=and_gate.A_pos, buff=0)
+        and_arrowB = Arrow(start=node2.get_right(), end=and_gate.B_pos, buff=0)
+        and_arrowO = Arrow(start=and_gate.O_pos, end=node3.get_left(), buff=0)
+
+        self.play(Write(and_arrowA),
+                  Write(and_arrowB),
+                  Write(and_arrowO))
 
 
         self.wait(2)
