@@ -1,4 +1,5 @@
 from manim import *
+from gates import ORGate, ANDGate, NOTGate, connect
 
 class NodesAndEdges(Scene):
     def construct(self):
@@ -276,3 +277,27 @@ class GeneticAlgorithm(Scene):
         self.wait(5)
 
 
+class BooleanNetwork(Scene):
+    def construct(self):
+        or_gate = ORGate(self)
+        and_gate = ANDGate(self)
+        not_gate = NOTGate(self)
+
+        # Draws the OR gate and moves it to the top left
+        or_gate.draw_gate()
+        or_gate.add_wires(draw=True)
+        self.wait()
+        self.play(or_gate.object.animate.move_to([-3,2,0]).scale(0.6))
+        self.wait()
+
+        # Draws the AND gate and moves it to the top left
+        and_gate.draw_gate()
+        and_gate.add_wires(draw=True)
+        self.play(and_gate.object.animate.move_to([-6,2,0]).scale(0.6))
+
+        # Draws the NOT gate and moves it to the top left
+        not_gate.draw_gate()
+        not_gate.add_wires(draw=True)
+
+        and_to_or = connect(and_gate.wireO, or_gate.wireB)
+        self.play(Create(and_to_or))
